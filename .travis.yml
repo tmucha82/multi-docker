@@ -10,7 +10,7 @@ before_install:
 
 # run test
 script:
-  - docker run -e CI=true tmucha82/client:latestt npm test
+  - docker run -e CI=true tmucha82/client:latest npm test
 
 #build prod version after test are successful
 after_success:
