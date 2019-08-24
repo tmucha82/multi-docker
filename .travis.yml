@@ -1,0 +1,34 @@
+language: generic
+sudo: required
+# specify docker as dep
+services:
+  - docker
+
+#build a test version as react project using dev docker file (only for react - only test there)
+before_install:
+  - docker build -t tmucha82/client:latest -f ./client/Dockerfile.dev ./client
+
+# run test
+script:
+  - docker run -e CI=true USERNAME/react-test npm test
+
+#build prod version after test are successful
+after_success:
+  - docker build -t tmucha82/multi-worker:latest ./worker
+  - docker build -t tmucha82/multi-server:latest ./server
+  - docker build -t tmucha82/multi-client:latest ./client
+  - docker build -t tmucha82/multi-nginx:latest ./nginx
+  #log to docker-cli
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # take images and push to docker hub
+  - docker push tmucha82/multi-worker:latest
+  - docker push tmucha82/multi-server:latest
+  - docker push tmucha82/multi-client:latest
+  - docker push tmucha82/multi-nginx:latest
+
+
+
+
+
+#script:
+#  - docker run -e CI=true USERNAME/react-test npm test
