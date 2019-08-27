@@ -26,9 +26,16 @@ after_success:
   - docker push tmucha82/multi-client:latest
   - docker push tmucha82/multi-nginx:latest
 
-
-
-
-
-#script:
-#  - docker run -e CI=true USERNAME/react-test npm test
+deploy:
+  provider: elasticbeanstalk
+  region: "us-east-2"
+  app: "docker-react"
+  env: "MultiDocker-env"
+  bucket_name: "elasticbeanstalk-us-east-2-823552865443"
+  bucket_path: "docker-multi"
+  access_key_id:
+    secure: "$AWS_ACCESS_KEY"
+  secret_access_key:
+    secure: "$AWS_SECRET_KEY"
+  on:
+    branch: master
